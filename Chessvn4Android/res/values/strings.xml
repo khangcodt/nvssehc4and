@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Chessvn4Android</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="author">Programmed by Tran Thanh Hoa</string>
+    <string name="playChessBtn">play Chess</string>
+    <string name="playChessvnBtn">play Chessvn</string>
+
+</resources>
