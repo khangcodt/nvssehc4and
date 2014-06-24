@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="org.chessvn.android.SimpleActivity"
+            android:label="@string/title_activity_simple"
+            android:parentActivityName="org.chessvn.android.MainActivity" >
+            <meta-data 
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.chessvn.android.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,8 @@
 package org.chessvn.android;
 
+import org.chessvn.android.util.Constant;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -8,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -19,6 +23,15 @@ public class MainActivity extends ActionBarActivity {
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
+		}
+		
+		Intent intent = getIntent();
+		String msg = intent.getStringExtra(Constant.EXTRA_MESSAGE);
+		if(msg != null) {
+			TextView textView = new TextView(this);
+			textView.setTextSize(40);
+			textView.setText(msg);
+			this.addContentView(textView, null);
 		}
 	}
 
@@ -42,6 +55,11 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void playChess(View view) {
+		Intent intent = new Intent(MainActivity.this, SimpleActivity.class);
+		this.startActivity(intent);
+	}
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
