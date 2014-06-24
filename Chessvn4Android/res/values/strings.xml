@@ -7,5 +7,8 @@
     <string name="author">Programmed by Tran Thanh Hoa</string>
     <string name="playChessBtn">play Chess</string>
     <string name="playChessvnBtn">play Chessvn</string>
+    <string name="title_activity_simple">SimpleActivity</string>
+    <string name="simple_activity">This is simple Activity</string>
+    <string name="btnSend">Send msg</string>
 
 </resources>
