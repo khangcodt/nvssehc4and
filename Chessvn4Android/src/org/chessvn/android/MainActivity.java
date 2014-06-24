@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
@@ -31,7 +32,7 @@ public class MainActivity extends ActionBarActivity {
 			TextView textView = new TextView(this);
 			textView.setTextSize(40);
 			textView.setText(msg);
-			this.addContentView(textView, null);
+			this.addContentView(textView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		}
 	}
 
