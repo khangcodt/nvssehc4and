@@ -1,6 +1,6 @@
 package org.chessvn.android;
 
-import org.chessvn.android.util.Constant;
+import org.chessvn.android.common.Constant;
 
 import android.app.Activity;
 import android.content.Intent;
