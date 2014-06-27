@@ -10,5 +10,9 @@
     <string name="title_activity_simple">SimpleActivity</string>
     <string name="simple_activity">This is simple Activity</string>
     <string name="btnSend">Send msg</string>
-
+	<color name="cellColor">#A0522D</color>
+    <color name="cellWhiteColor">#A9A9A9</color>
+    <color name="cirColor">#4682B4</color>
+    <color name="cirWhiteColor">#228B22</color>
+    <color name="showMoveColor">#87CEFA</color>
 </resources>
