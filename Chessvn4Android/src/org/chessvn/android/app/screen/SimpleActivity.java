@@ -1,7 +1,7 @@
 package org.chessvn.android.app.screen;
 
 import org.chessvn.android.app.R;
-import org.chessvn.android.app.common.Constant;
+import org.chessvn.android.util.Constant;
 
 import android.app.Activity;
 import android.content.Intent;
