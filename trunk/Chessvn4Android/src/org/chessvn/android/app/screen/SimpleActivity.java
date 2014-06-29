@@ -20,9 +20,9 @@ public class SimpleActivity extends Activity {
 	public void sendMsg(View view) {
 		Intent intent = new Intent(SimpleActivity.this, MainActivity.class);
 		this.startActivity(intent);
-		EditText editText = (EditText) findViewById(R.id.edit_msg);
-		String msg = editText.getText().toString();
-		intent.putExtra(Constant.EXTRA_MESSAGE, msg);
+//		EditText editText = (EditText) findViewById(R.id.edit_msg);
+//		String msg = editText.getText().toString();
+//		intent.putExtra(Constant.EXTRA_MESSAGE, msg);
 		startActivity(intent);
 	}
 	
