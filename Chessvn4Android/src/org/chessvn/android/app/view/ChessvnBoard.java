@@ -11,8 +11,10 @@ import android.view.View;
 public class ChessvnBoard extends View {
 
 	/** number of columns and rows */
-	public static int chessvnBoardNumber = 8;
+	public static int chessvnBoardNumber = 10;
+	public boolean reverseBoard =false;
 	private int cellSize;
+	private int circleRadius = 12;
 
 	// color theme
 	private Paint cellColor;
@@ -43,18 +45,46 @@ public class ChessvnBoard extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		cellSize = getCellSize();
-		for(int rank = 0; rank < chessvnBoardNumber; rank++) 
-			for(int file = 0; file < chessvnBoardNumber; file++) {
-				int xLeft = rank*cellSize;
-				int yLeft = file*cellSize;
-				if ((rank+file&1)==1) canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, cellColor);
-				else canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, cellWhiteColor);
+		drawCell(canvas);
+		drawCircles(canvas);
+	}
+
+	private void drawCell(Canvas canvas) {
+		int xLeft, yLeft;
+		for (int rank = 0; rank < chessvnBoardNumber; rank++)
+			for (int file = 0; file < chessvnBoardNumber; file++) {
+				xLeft = file * cellSize;
+				yLeft = rank * cellSize;
+				if ((rank + file & 1) == 1)
+					canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, cellColor);
+				else
+					canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, cellWhiteColor);
 			}
 	}
 
+	private void drawCircles(Canvas canvas) {
+		if(reverseBoard) {
+			
+		} else {
+			drawOneCircle(canvas, 0, 3, cirColor);
+		}
+	}
+	
+	private void drawOneCircle(Canvas canvas, int rank, int file, Paint color) {
+		int cx,cy;
+		if(reverseBoard) {
+			cx = (chessvnBoardNumber - 1 - file)*cellSize + cellSize/2;
+			cy = rank*cellSize + cellSize/2;
+		} else {
+			cx = file*cellSize + cellSize/2;
+			cy = (chessvnBoardNumber - 1 - rank)*cellSize + cellSize/2;
+		}
+		canvas.drawCircle(cx, cy, circleRadius, color);
+	}
+	
 	public int getCellSize() {
 		int width = getWidth();
 		int height = getHeight();
-		return Math.min(width/chessvnBoardNumber, height/chessvnBoardNumber);
+		return Math.min(width / chessvnBoardNumber, height / chessvnBoardNumber);
 	}
 }

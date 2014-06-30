@@ -4,7 +4,7 @@
 	android:orientation="horizontal">
 
     <org.chessvn.android.app.view.ChessvnBoard
-        android:id="@+id/chessvnBoard1"
+        android:id="@+id/chessvnBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
