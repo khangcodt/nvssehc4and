@@ -3,7 +3,7 @@
 	android:layout_height="match_parent" tools:context="${packageName}.${activityClass}"
 	android:orientation="horizontal">
 
-    <org.chessvn.android.app.view.ChessvnBoard
+    <org.chessvn.android.app.view.ChessBoard
         android:id="@+id/chessvnBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
