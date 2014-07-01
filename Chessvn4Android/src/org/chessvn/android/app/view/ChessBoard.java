@@ -15,7 +15,7 @@ public class ChessBoard extends View {
 	public static boolean isChessvn = true;
 	public boolean reverseBoard =false;
 	private int cellSize;
-	private int circleRadius = 12;
+	private int circleRadius = 11;
 
 	// color theme
 	private Paint cellColor;
