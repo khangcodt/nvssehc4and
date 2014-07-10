@@ -10,22 +10,22 @@ public class RuleBoard {
 	public static boolean isChessvn = true;
 	public static byte totalField = (byte) (boardNumber * boardNumber);
 
-	static final byte EM = 0; // EMpty.
-	static final byte WK = 1; // White King
-	static final byte WQ = 2; // White Queen
-	static final byte WR = 3; // White Rook
-	static final byte WB = 4; // White Bishop
-	static final byte WN = 5; // White Knight
-	static final byte WP = 6; // White Pawn
-	static final byte WKD = 7; // White Khida
-	static final byte BK = 8; // Black King
-	static final byte BQ = 9; // Black Queen
-	static final byte BR = 10; // Black Rook
-	static final byte BB = 11; // Black Bishop
-	static final byte BN = 12; // Black Knight
-	static final byte BP = 13; // Black Pawn
-	static final byte BKD = 14; // Black Khida
-	static final byte[] startPosition = {
+	public static final byte EM = 0; // EMpty.
+	public static final byte WK = 1; // White King
+	public static final byte WQ = 2; // White Queen
+	public static final byte WR = 3; // White Rook
+	public static final byte WB = 4; // White Bishop
+	public static final byte WN = 5; // White Knight
+	public static final byte WP = 6; // White Pawn
+	public static final byte WKD = 7; // White Khida
+	public static final byte BK = 8; // Black King
+	public static final byte BQ = 9; // Black Queen
+	public static final byte BR = 10; // Black Rook
+	public static final byte BB = 11; // Black Bishop
+	public static final byte BN = 12; // Black Knight
+	public static final byte BP = 13; // Black Pawn
+	public static final byte BKD = 14; // Black Khida
+	public static final byte[] startPosition = {
 	 	WR,EM,WN,WB,WQ,WK,WB,WN,EM,WR,
 	 	EM,WKD,EM,EM,EM,EM,EM,EM,WKD,EM,
 	 	WP,WP,WP,WP,WP,WP,WP,WP,WP,WP,
@@ -797,7 +797,20 @@ public class RuleBoard {
 //		if(jcb!=null)
 //			jcb.showMessage(s);
 	}
+	
 	public RuleBoard() {
+		if(isChessvn) boardNumber = 10;//Chessvn Board
+		else boardNumber = 8;//Chess Board
+		
+		allKhidaLeftPos = getAllKhidaLeftPos();
+		allKhidaRightPos = getAllKhidaRightPos();
+	}
+	
+	public RuleBoard(boolean isChessvn) {
+		RuleBoard.isChessvn = isChessvn;
+		if(isChessvn) boardNumber = 10;//Chessvn Board
+		else boardNumber = 8;//Chess Board
+		
 		allKhidaLeftPos = getAllKhidaLeftPos();
 		allKhidaRightPos = getAllKhidaRightPos();
 	}
