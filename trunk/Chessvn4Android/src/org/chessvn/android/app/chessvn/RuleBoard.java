@@ -2,7 +2,7 @@ package org.chessvn.android.app.chessvn;
 
 import java.util.List;
 
-public class ChessvnRule {
+public class RuleBoard {
 
 	/** number of columns and rows */
 	public static byte boardNumber = 10;
@@ -24,15 +24,19 @@ public class ChessvnRule {
 	static final byte BN = 12; // Black Knight
 	static final byte BP = 13; // Black Pawn
 	static final byte BKD = 14; // Black Khida
-	static final byte[] startPosition = { WR, EM, WN, WB, WQ, WK, WB, WN, EM,
-			WR, EM, WKD, EM, EM, EM, EM, EM, EM, WKD, EM, WP, WP, WP, WP, WP,
-			WP, WP, WP, WP, WP, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM,
-			EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM,
-			EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, EM, BP, BP, BP, BP, BP, BP,
-			BP, BP, BP, BP, EM, BKD, EM, EM, EM, EM, EM, EM, BKD, EM, BR, EM,
-			BN, BB, BQ, BK, BB, BN, EM, BR };
-	String[] name = { "  ", "WK", "WQ", "WR", "WB", "WN", "WP", "WKD", "BK",
-			"BQ", "BR", "BB", "BN", "BP", "BKD" };
+	static final byte[] startPosition = {
+	 	WR,EM,WN,WB,WQ,WK,WB,WN,EM,WR,
+	 	EM,WKD,EM,EM,EM,EM,EM,EM,WKD,EM,
+	 	WP,WP,WP,WP,WP,WP,WP,WP,WP,WP,
+		EM,EM,EM,EM,EM,EM,EM,EM,EM,EM,			
+		EM,EM,EM,EM,EM,EM,EM,EM,EM,EM,			
+		EM,EM,EM,EM,EM,EM,EM,EM,EM,EM,			
+		EM,EM,EM,EM,EM,EM,EM,EM,EM,EM,			
+		BP,BP,BP,BP,BP,BP,BP,BP,BP,BP,
+		EM,BKD,EM,EM,EM,EM,EM,EM,BKD,EM,
+		BR,EM,BN,BB,BQ,BK,BB,BN,EM,BR 	};
+	String[] name = 	{"  ", "WK","WQ","WR","WB","WN","WP","WKD",
+ 						       "BK","BQ","BR","BB","BN","BP","BKD"};
 	byte[] field = new byte[totalField];
 	boolean whiteKingHasMoved;
 	boolean blackKingHasMoved;
@@ -124,8 +128,8 @@ public class ChessvnRule {
 		blackKing = getPos(9, 5);// (0<<3)+4;
 	}
 
-	public ChessvnRule clonedBoard() {
-		ChessvnRule newBoard = new ChessvnRule();
+	public RuleBoard clonedBoard() {
+		RuleBoard newBoard = new RuleBoard();
 		for (int n = 0; n < totalField; n++)
 			newBoard.field[n] = field[n];
 		newBoard.isWhiteTurn = isWhiteTurn;
