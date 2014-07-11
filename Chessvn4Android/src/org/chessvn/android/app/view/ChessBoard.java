@@ -17,7 +17,7 @@ public class ChessBoard extends View {
 	public static boolean isChessvn = true;
 	public boolean reverseBoard =false;
 	private int cellSize;
-	private int circleRadius = 15;
+	private int circleRadius = 12;
 
 	// color theme
 	private Paint cellColor;
@@ -99,7 +99,7 @@ public class ChessBoard extends View {
 		case RuleBoard.BB: returnPiece = getResources().getDrawable(R.drawable.bb);
 		case RuleBoard.BN: returnPiece = getResources().getDrawable(R.drawable.bn);
 		case RuleBoard.BP: returnPiece = getResources().getDrawable(R.drawable.bp);
-		case RuleBoard.BKD: returnPiece = getResources().getDrawable(R.drawable.bkd);
+		case RuleBoard.BKD: returnPiece = getResources().getDrawable(R.drawable.br);
 		}
 		return returnPiece;
 	}
