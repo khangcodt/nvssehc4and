@@ -1,13 +1,11 @@
 package org.chessvn.android.app.screen;
 
 import org.chessvn.android.app.R;
-import org.chessvn.android.app.common.Constant;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 
 public class SimpleActivity extends Activity {
 

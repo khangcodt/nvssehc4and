@@ -17,7 +17,7 @@ public class ChessBoard extends View {
 	public static boolean isChessvn = true;
 	public boolean reverseBoard =false;
 	private int cellSize;
-	private int circleRadius = 12;
+	private int circleRadius = 15;
 
 	// color theme
 	private Paint cellColor;
@@ -26,13 +26,14 @@ public class ChessBoard extends View {
 	private Paint cirWhiteColor;
 	private Paint showMoveColor;
 	
-	private Drawable piece;
-
 	RuleBoard rb;
 	
 	private void initConstructor() {
-		if(isChessvn) boardNumber = 10;//Chessvn Board
-		else boardNumber = 8;//Chess Board
+//		if(isChessvn) boardNumber = 10;//Chessvn Board
+//		else boardNumber = 8;//Chess Board
+		isChessvn = RuleBoard.isChessvn;
+		boardNumber = RuleBoard.boardNumber;
+		rb = new RuleBoard(isChessvn);
 		
 		cellColor = new Paint();
 		cellWhiteColor = new Paint();
@@ -40,7 +41,6 @@ public class ChessBoard extends View {
 		cirWhiteColor = new Paint();
 		showMoveColor = new Paint();
 		setColorTheme();
-		rb = new RuleBoard(isChessvn);
 	}
 	
 	public ChessBoard(Context context, AttributeSet attrs) {
@@ -50,14 +50,12 @@ public class ChessBoard extends View {
 
 	public ChessBoard(Context context, AttributeSet attrs, boolean isChessvn) {
 		super(context, attrs);
-		
 		ChessBoard.isChessvn = isChessvn;
 		initConstructor();
 	}
 	
 	public ChessBoard(Context context, AttributeSet attrs, boolean isChessvn, RuleBoard rb) {
 		super(context, attrs);
-		
 		ChessBoard.isChessvn = isChessvn;
 		this.rb = rb;
 		initConstructor();
@@ -86,20 +84,20 @@ public class ChessBoard extends View {
 	public Drawable loadPieceImage(byte piece) {
 		Drawable returnPiece = null;
 		switch (piece) {
-		case RuleBoard.WK: returnPiece = getResources().getDrawable(R.drawable.wk);
-		case RuleBoard.WQ: returnPiece = getResources().getDrawable(R.drawable.wq);
-		case RuleBoard.WR: returnPiece = getResources().getDrawable(R.drawable.wr);
-		case RuleBoard.WB: returnPiece = getResources().getDrawable(R.drawable.wb);
-		case RuleBoard.WN: returnPiece = getResources().getDrawable(R.drawable.wn);
-		case RuleBoard.WP: returnPiece = getResources().getDrawable(R.drawable.wp);
-		case RuleBoard.WKD: returnPiece = getResources().getDrawable(R.drawable.wkd);
-		case RuleBoard.BK: returnPiece = getResources().getDrawable(R.drawable.bk);
-		case RuleBoard.BQ: returnPiece = getResources().getDrawable(R.drawable.bq);
-		case RuleBoard.BR: returnPiece = getResources().getDrawable(R.drawable.br);
-		case RuleBoard.BB: returnPiece = getResources().getDrawable(R.drawable.bb);
-		case RuleBoard.BN: returnPiece = getResources().getDrawable(R.drawable.bn);
-		case RuleBoard.BP: returnPiece = getResources().getDrawable(R.drawable.bp);
-		case RuleBoard.BKD: returnPiece = getResources().getDrawable(R.drawable.br);
+		case RuleBoard.WK: returnPiece = getResources().getDrawable(R.drawable.wk); break;
+		case RuleBoard.WQ: returnPiece = getResources().getDrawable(R.drawable.wq); break;
+		case RuleBoard.WR: returnPiece = getResources().getDrawable(R.drawable.wr); break;
+		case RuleBoard.WB: returnPiece = getResources().getDrawable(R.drawable.wb); break;
+		case RuleBoard.WN: returnPiece = getResources().getDrawable(R.drawable.wn); break;
+		case RuleBoard.WP: returnPiece = getResources().getDrawable(R.drawable.wp); break;
+		case RuleBoard.WKD: returnPiece = getResources().getDrawable(R.drawable.wkd); break;
+		case RuleBoard.BK: returnPiece = getResources().getDrawable(R.drawable.bk); break;
+		case RuleBoard.BQ: returnPiece = getResources().getDrawable(R.drawable.bq); break;
+		case RuleBoard.BR: returnPiece = getResources().getDrawable(R.drawable.br); break;
+		case RuleBoard.BB: returnPiece = getResources().getDrawable(R.drawable.bb); break;
+		case RuleBoard.BN: returnPiece = getResources().getDrawable(R.drawable.bn); break;
+		case RuleBoard.BP: returnPiece = getResources().getDrawable(R.drawable.bp); break;
+		case RuleBoard.BKD: returnPiece = getResources().getDrawable(R.drawable.bkd); break;
 		}
 		return returnPiece;
 	}
@@ -110,7 +108,8 @@ public class ChessBoard extends View {
 		cellSize = getCellSize();
 		drawCell(canvas);
 		if(isChessvn) drawCircles(canvas);
-		drawPiece(canvas, 1, 1, RuleBoard.WB);
+//		if(rb == null) rb = new RuleBoard(isChessvn);
+		drawAllPiecesOnBoard(rb, canvas);
 	}
 
 	
@@ -177,12 +176,35 @@ public class ChessBoard extends View {
 		canvas.drawCircle(cx, cy, circleRadius, color);
 	}
 	
+	/**
+	 * Draw given piece in given position
+	 * @param canvas
+	 * @param rank
+	 * @param file
+	 * @param piece
+	 */
 	public void drawPiece(Canvas canvas, int rank, int file, byte piece) {
-		int left = 3, top = 4, right = 4, bottom = 3;
+		int left = file*cellSize;
+		int top = (boardNumber - 1 - rank)*cellSize;
+		int right = (file+1)*cellSize;
+		int bottom = (boardNumber - rank)*cellSize;
 		Drawable thispiece = loadPieceImage(piece);
-//		this.piece.setBounds(canvas.getClipBounds());
-		thispiece.setBounds(left*cellSize, top*cellSize, right*cellSize, bottom*cellSize);
-		thispiece.draw(canvas);
+		if(thispiece != null) {
+			thispiece.setBounds(left, top, right, bottom);
+			thispiece.draw(canvas);
+		}
+	}
+	
+	/**
+	 * Draw all pieces on given RuleBoard
+	 * @param rb
+	 * @param canvas
+	 */
+	public void drawAllPiecesOnBoard(RuleBoard rb, Canvas canvas) {
+		for(byte rank = 0; rank < boardNumber; rank++) 
+			for(byte file = 0; file < boardNumber; file++) {
+				drawPiece(canvas, rank, file, rb.field[rb.getPos(rank, file)]);
+			}
 	}
 	
 	/**
