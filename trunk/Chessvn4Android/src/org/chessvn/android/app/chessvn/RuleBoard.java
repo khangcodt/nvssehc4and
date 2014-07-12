@@ -38,7 +38,7 @@ public class RuleBoard {
 		BR,EM,BN,BB,BQ,BK,BB,BN,EM,BR 	};
 	String[] name = 	{"  ", "WK","WQ","WR","WB","WN","WP","WKD",
  						       "BK","BQ","BR","BB","BN","BP","BKD"};
-	byte[] field = new byte[totalField];
+	public byte[] field = new byte[totalField];
 	boolean whiteKingHasMoved;
 	boolean blackKingHasMoved;
 	boolean leftBlackRookHasMoved;
@@ -94,12 +94,12 @@ public class RuleBoard {
 		return (byte) (pos % 10);
 	}
 
-	private byte getPos(byte Rank, byte File) {
+	public byte getPos(byte Rank, byte File) {
 		// maybe optimized later
 		return (byte) (Rank * 10 + File);
 	}
 
-	private byte getPos(int Rank, int File) {
+	public byte getPos(int Rank, int File) {
 		// maybe optimized later
 		return (byte) (Rank * 10 + File);
 	}
@@ -798,20 +798,21 @@ public class RuleBoard {
 //			jcb.showMessage(s);
 	}
 	
-	public RuleBoard() {
+	private void initConstructor() {
 		if(isChessvn) boardNumber = 10;//Chessvn Board
 		else boardNumber = 8;//Chess Board
 		
 		allKhidaLeftPos = getAllKhidaLeftPos();
 		allKhidaRightPos = getAllKhidaRightPos();
+		init();
+	}
+	
+	public RuleBoard() {
+		initConstructor();
 	}
 	
 	public RuleBoard(boolean isChessvn) {
 		RuleBoard.isChessvn = isChessvn;
-		if(isChessvn) boardNumber = 10;//Chessvn Board
-		else boardNumber = 8;//Chess Board
-		
-		allKhidaLeftPos = getAllKhidaLeftPos();
-		allKhidaRightPos = getAllKhidaRightPos();
+		initConstructor();
 	}
 }
