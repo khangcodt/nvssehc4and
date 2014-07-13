@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ChessBoard extends View {
@@ -35,6 +36,7 @@ public class ChessBoard extends View {
 		boardNumber = RuleBoard.boardNumber;
 		rb = new RuleBoard(isChessvn);
 		
+		cellSize = getCellSize();
 		cellColor = new Paint();
 		cellWhiteColor = new Paint();
 		cirColor = new Paint();
@@ -105,13 +107,50 @@ public class ChessBoard extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 //		reverseBoard = true;//test
-		cellSize = getCellSize();
 		drawCell(canvas);
 		if(isChessvn) drawCircles(canvas);
 //		if(rb == null) rb = new RuleBoard(isChessvn);
 		drawAllPiecesOnBoard(rb, canvas);
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		int action = event.getAction();
+		switch(action) {
+        case (MotionEvent.ACTION_DOWN) :
+        	
+        	return true;
+        case (MotionEvent.ACTION_UP) :
+        	
+        	return true;
+
+		}
+		return false;
+	}
+	
+	/**
+	 * Get the position (0 - 63) on board corresponding to the coordinates of a mouse event.
+	 * @param event mouse event.
+	 * @return The position corresponding to the mouse event, or -1 if not in board.
+	 */
+	public byte getPosOnEvent(MotionEvent event) {//check carefully calculation of rank and file
+		byte posSelected = -1;
+		int xCrd = (int)(event.getX());
+        int yCrd = (int)(event.getY());
+        if ((xCrd >= 0) && (yCrd >= 0) && (cellSize > 0)) {
+        	int file = xCrd/cellSize;
+        	int rank = xCrd/cellSize;
+        	if((rank >= 0)&&(rank < boardNumber)&&(file >= 0)&&(file < boardNumber)) {
+        		if(reverseBoard) {
+        			rank = boardNumber - 1 - rank;
+        			file = boardNumber - 1 - file;
+        		}
+        		posSelected = rb.getPos(rank, file);
+        	}
+        }
+        
+		return posSelected;
+	}
 	
 	/**
 	 * Draw square cell of the board. The board is square so don't need to check reversed

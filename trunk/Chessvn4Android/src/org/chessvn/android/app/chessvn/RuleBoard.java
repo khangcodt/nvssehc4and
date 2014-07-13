@@ -84,12 +84,12 @@ public class RuleBoard {
 		return algebraic(getPos(rank, file));
 	}
 
-	private byte getRank(byte pos) {
+	public byte getRank(byte pos) {
 		// maybe optimized later
 		return (byte) (pos / 10);
 	}
 
-	private byte getFile(byte pos) {
+	public byte getFile(byte pos) {
 		// maybe optimized later
 		return (byte) (pos % 10);
 	}
