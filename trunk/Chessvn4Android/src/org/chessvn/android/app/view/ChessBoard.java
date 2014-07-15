@@ -16,7 +16,9 @@ public class ChessBoard extends View {
 	/** number of columns and rows */
 	public static int boardNumber = 10;
 	public static boolean isChessvn = true;
-	public boolean reverseBoard =false;
+	public boolean reverseBoard = false;
+	public boolean showMove = true;
+	
 	private int cellSize;
 	private int circleRadius = 15;
 
@@ -107,8 +109,8 @@ public class ChessBoard extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 //		reverseBoard = true;//test
-		drawCell(canvas);
-		if(isChessvn) drawCircles(canvas);
+		drawAllCells(canvas);
+		if(isChessvn) drawAllCircles(canvas);
 //		if(rb == null) rb = new RuleBoard(isChessvn);
 		drawAllPiecesOnBoard(rb, canvas);
 	}
@@ -118,14 +120,30 @@ public class ChessBoard extends View {
 		int action = event.getAction();
 		switch(action) {
         case (MotionEvent.ACTION_DOWN) :
+        	byte selectedPos = getPosOnEvent(event);
+        	//if(cannot handle piece or board) return;
+        	if(!rb.isHandledPiece(selectedPos)) return true;
         	
+        	//else if no piece in this position: revalidate(); return;
+        	if(rb.isEmptyField(selectedPos)) {
+        		invalidate();
+        		return true;
+        	}
+        	
+        	//esle if show move true: showmove();
+        	if(showMove) {
+//        		showMove(canvas, selectedPos);
+        	}
         	return true;
         case (MotionEvent.ACTION_UP) :
-        	
+        	//check if piece can move to new position
+        	//make move
+        	//show message
+        	//check game is finished?
         	return true;
-
+        default : return super.onTouchEvent(event);
 		}
-		return false;
+//		return false;
 	}
 	
 	/**
@@ -152,49 +170,63 @@ public class ChessBoard extends View {
 		return posSelected;
 	}
 	
+	public void showMove(Canvas canvas, byte fromPos) {
+		for (byte rank = 0; rank < boardNumber; rank++)
+			for (byte file = 0; file < boardNumber; file++) {
+				byte toPos = rb.getPos(rank, file);
+				if(rb.isPossibleMove(fromPos, toPos)) {
+					if(reverseBoard) drawCell(canvas, boardNumber - 1 - rank, boardNumber - 1 - file, showMoveColor);
+					else drawCell(canvas, rank, file, showMoveColor);
+				}
+			}
+	}
+	
 	/**
 	 * Draw square cell of the board. The board is square so don't need to check reversed
 	 * @param canvas
 	 */
-	private void drawCell(Canvas canvas) {
-		int xLeft, yLeft;
-		for (int rank = 0; rank < boardNumber; rank++)
-			for (int file = 0; file < boardNumber; file++) {
-				xLeft = file * cellSize;
-				yLeft = rank * cellSize;
-				if ((rank + file & 1) == 1) canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, cellColor);
-				else canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, cellWhiteColor);
+	private void drawAllCells(Canvas canvas) {
+		for (byte rank = 0; rank < boardNumber; rank++)
+			for (byte file = 0; file < boardNumber; file++) {
+				if ((rank + file & 1) == 1) drawCell(canvas, rank, file, cellColor); 
+				else drawCell(canvas, rank, file, cellWhiteColor);
 			}
 	}
 
+	private void drawCell(Canvas canvas, int rank, int file, Paint color) {
+		int xLeft = file * cellSize;
+		int yLeft = rank * cellSize;
+		canvas.drawRect(xLeft, yLeft, xLeft + cellSize, yLeft + cellSize, color);
+	}
+	
 	/**
 	 * Statically draw position of circles on the board of chessvn
 	 * @param canvas
 	 */
-	private void drawCircles(Canvas canvas) {
+	private void drawAllCircles(Canvas canvas) {
 		Paint cirBightColor = reverseBoard ? cirColor : cirWhiteColor;
 		Paint cirDarkColor = reverseBoard ? cirWhiteColor : cirColor;
 		
-		for(int i=3;i<6;i++) 	drawOneCircle(canvas, 0, i, cirBightColor);
-		for(int i=6;i<7;i++) 	drawOneCircle(canvas, 0, i, cirDarkColor);
-		for(int i=2;i<7;i++) 	drawOneCircle(canvas, 1, i, cirBightColor);
-		for(int i=7;i<8;i++) 	drawOneCircle(canvas, 1, i, cirDarkColor);
-		for(int i=1;i<7;i++) 	drawOneCircle(canvas, 2, i, cirBightColor);
-		for(int i=7;i<9;i++) 	drawOneCircle(canvas, 2, i, cirDarkColor);
-		for(int i=0;i<7;i++) 	drawOneCircle(canvas, 3, i, cirBightColor);
-		for(int i=7;i<10;i++) 	drawOneCircle(canvas, 3, i, cirDarkColor);
-		for(int i=0;i<6;i++) 	drawOneCircle(canvas, 4, i, cirBightColor);
-		for(int i=6;i<10;i++) 	drawOneCircle(canvas, 4, i, cirDarkColor);
-		for(int i=0;i<4;i++) 	drawOneCircle(canvas, 5, i, cirBightColor);
-		for(int i=4;i<10;i++) 	drawOneCircle(canvas, 5, i, cirDarkColor);
-		for(int i=0;i<3;i++) 	drawOneCircle(canvas, 6, i, cirBightColor);
-		for(int i=3;i<10;i++) 	drawOneCircle(canvas, 6, i, cirDarkColor);
-		for(int i=1;i<3;i++) 	drawOneCircle(canvas, 7, i, cirBightColor);
-		for(int i=3;i<9;i++) 	drawOneCircle(canvas, 7, i, cirDarkColor);
-		for(int i=2;i<3;i++) 	drawOneCircle(canvas, 8, i, cirBightColor);
-		for(int i=3;i<8;i++) 	drawOneCircle(canvas, 8, i, cirDarkColor);
-		for(int i=3;i<4;i++) 	drawOneCircle(canvas, 9, i, cirBightColor);
-		for(int i=4;i<7;i++) 	drawOneCircle(canvas, 9, i, cirDarkColor);
+		for(int i=3;i<6;i++) 	drawCircle(canvas, 0, i, cirBightColor);
+		for(int i=6;i<7;i++) 	drawCircle(canvas, 0, i, cirDarkColor);
+		for(int i=2;i<7;i++) 	drawCircle(canvas, 1, i, cirBightColor);
+		for(int i=7;i<8;i++) 	drawCircle(canvas, 1, i, cirDarkColor);
+		for(int i=1;i<7;i++) 	drawCircle(canvas, 2, i, cirBightColor);
+		for(int i=7;i<9;i++) 	drawCircle(canvas, 2, i, cirDarkColor);
+		for(int i=0;i<7;i++) 	drawCircle(canvas, 3, i, cirBightColor);
+		for(int i=7;i<10;i++) 	drawCircle(canvas, 3, i, cirDarkColor);
+		for(int i=0;i<6;i++) 	drawCircle(canvas, 4, i, cirBightColor);
+		for(int i=6;i<10;i++) 	drawCircle(canvas, 4, i, cirDarkColor);
+		for(int i=0;i<4;i++) 	drawCircle(canvas, 5, i, cirBightColor);
+		for(int i=4;i<10;i++) 	drawCircle(canvas, 5, i, cirDarkColor);
+		for(int i=0;i<3;i++) 	drawCircle(canvas, 6, i, cirBightColor);
+		for(int i=3;i<10;i++) 	drawCircle(canvas, 6, i, cirDarkColor);
+		for(int i=1;i<3;i++) 	drawCircle(canvas, 7, i, cirBightColor);
+		for(int i=3;i<9;i++) 	drawCircle(canvas, 7, i, cirDarkColor);
+		for(int i=2;i<3;i++) 	drawCircle(canvas, 8, i, cirBightColor);
+		for(int i=3;i<8;i++) 	drawCircle(canvas, 8, i, cirDarkColor);
+		for(int i=3;i<4;i++) 	drawCircle(canvas, 9, i, cirBightColor);
+		for(int i=4;i<7;i++) 	drawCircle(canvas, 9, i, cirDarkColor);
 	}
 	
 	/**
@@ -204,7 +236,7 @@ public class ChessBoard extends View {
 	 * @param file
 	 * @param color
 	 */
-	private void drawOneCircle(Canvas canvas, int rank, int file, Paint color) {
+	private void drawCircle(Canvas canvas, int rank, int file, Paint color) {
 		int cx,cy;
 //		if(reverseBoard) {
 //			cx = (chessvnBoardNumber - 1 - file)*cellSize + cellSize/2;

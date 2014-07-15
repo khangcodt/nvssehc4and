@@ -39,6 +39,12 @@ public class RuleBoard {
 	String[] name = 	{"  ", "WK","WQ","WR","WB","WN","WP","WKD",
  						       "BK","BQ","BR","BB","BN","BP","BKD"};
 	public byte[] field = new byte[totalField];
+	public List<Byte> allKhidaLeftPos = null;
+	public List<Byte> allKhidaRightPos = null;
+	public boolean userIsWhite = true;
+	public boolean userIsBlack = true;
+	public boolean isLocked = false;
+	
 	boolean whiteKingHasMoved;
 	boolean blackKingHasMoved;
 	boolean leftBlackRookHasMoved;
@@ -50,9 +56,6 @@ public class RuleBoard {
 	byte lastFrom = totalField; // 3 bits per rank/file
 	byte lastTo = totalField; // (x>>3) gives rank, (x&7) gives file
 	byte pawnPromotion = 2; // Queen. In black player is turn, 6 will be added.
-
-	public List<Byte> allKhidaLeftPos = null;
-	public List<Byte> allKhidaRightPos = null;
 
 	public boolean isWhiteFigure(byte f) {
 		return f > 0 && f < 8;
@@ -145,6 +148,27 @@ public class RuleBoard {
 		newBoard.blackKing = blackKing;
 		newBoard.whiteKing = whiteKing;
 		return newBoard;
+	}
+	
+	/**
+	 * Check if the piece in position can handle
+	 * @param pos
+	 * @return true if piece can handle
+	 */
+	public boolean isHandledPiece(byte pos) {
+		return !(isLocked || 
+				(isWhiteFigure(field[pos])!=isWhiteTurn) || 
+				(!userIsWhite && isWhiteTurn) || 
+				(!userIsBlack && !isWhiteTurn));
+	}
+	
+	/**
+	 * Check if no piece in position
+	 * @param pos
+	 * @return true if no piece in position
+	 */
+	public boolean isEmptyField(byte pos) {
+		return field[pos] == EM;
 	}
 	
 	public boolean isEqualTo(RuleBoard rb) {
