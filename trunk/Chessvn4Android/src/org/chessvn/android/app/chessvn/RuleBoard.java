@@ -1,7 +1,10 @@
 package org.chessvn.android.app.chessvn;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class RuleBoard {
 
@@ -170,6 +173,19 @@ public class RuleBoard {
 	public boolean isEmptyField(byte pos) {
 		return field[pos] == EM;
 	}
+	
+
+//	public byte[] getAllPossibleMoves(byte fromPos) {
+//		List<Byte> result = new ArrayList<Byte>();
+//		for (byte rank = 0; rank < boardNumber; rank++)
+//			for (byte file = 0; file < boardNumber; file++) {
+//				byte toPos = getPos(rank, file);
+//				if(isPossibleMove(fromPos, toPos)) {
+//					result.add(toPos);
+//				}
+//			}
+//		if(result.size() > 0) return result.toArray(byte[result.size()]);
+//	}
 	
 	public boolean isEqualTo(RuleBoard rb) {
 		// Whether rooks or kings have moved is not considered here.

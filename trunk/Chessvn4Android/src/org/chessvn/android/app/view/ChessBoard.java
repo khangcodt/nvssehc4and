@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,7 +21,9 @@ public class ChessBoard extends View {
 	public boolean showMove = true;
 	
 	private int cellSize;
-	private int circleRadius = 15;
+	private int circleRadius = 12;
+	private byte[] allPossibleMoves;
+	private Canvas canvas;
 
 	// color theme
 	private Paint cellColor;
@@ -107,8 +110,11 @@ public class ChessBoard extends View {
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
+	protected void onDraw(Canvas cv) {
+		cellSize = getCellSize();
+		this.canvas = cv;
 //		reverseBoard = true;//test
+//		drawCell(canvas, 4, 4, cellColor);//test
 		drawAllCells(canvas);
 		if(isChessvn) drawAllCircles(canvas);
 //		if(rb == null) rb = new RuleBoard(isChessvn);
@@ -122,17 +128,23 @@ public class ChessBoard extends View {
         case (MotionEvent.ACTION_DOWN) :
         	byte selectedPos = getPosOnEvent(event);
         	//if(cannot handle piece or board) return;
-        	if(!rb.isHandledPiece(selectedPos)) return true;
+        	if(!rb.isHandledPiece(selectedPos)) {
+        		Log.i("ChessBoard", "cannot handle piece");
+        		return true;
+        	}
         	
         	//else if no piece in this position: revalidate(); return;
         	if(rb.isEmptyField(selectedPos)) {
+        		Log.i("ChessBoard", "Empty piece");
         		invalidate();
         		return true;
         	}
         	
         	//esle if show move true: showmove();
         	if(showMove) {
-//        		showMove(canvas, selectedPos);
+        		Log.i("ChessBoard", "Showing move now ...");
+        		Log.i("ChessBoard", "selectedPos = " + selectedPos);
+        		showMove(canvas, selectedPos);
         	}
         	return true;
         case (MotionEvent.ACTION_UP) :
@@ -157,7 +169,7 @@ public class ChessBoard extends View {
         int yCrd = (int)(event.getY());
         if ((xCrd >= 0) && (yCrd >= 0) && (cellSize > 0)) {
         	int file = xCrd/cellSize;
-        	int rank = xCrd/cellSize;
+        	int rank = boardNumber - 1 - yCrd/cellSize;
         	if((rank >= 0)&&(rank < boardNumber)&&(file >= 0)&&(file < boardNumber)) {
         		if(reverseBoard) {
         			rank = boardNumber - 1 - rank;
@@ -165,8 +177,13 @@ public class ChessBoard extends View {
         		}
         		posSelected = rb.getPos(rank, file);
         	}
+        	Log.i("ChessBoard", "xCrd = " + xCrd);
+        	Log.i("ChessBoard", "yCrd = " + yCrd);
+        	Log.i("ChessBoard", "cellSize = " + cellSize);
+        	Log.i("ChessBoard", "rank = " + rank);
+        	Log.i("ChessBoard", "file = " + file);
+        	Log.i("ChessBoard", "posSelected = " + posSelected);
         }
-        
 		return posSelected;
 	}
 	
@@ -175,10 +192,12 @@ public class ChessBoard extends View {
 			for (byte file = 0; file < boardNumber; file++) {
 				byte toPos = rb.getPos(rank, file);
 				if(rb.isPossibleMove(fromPos, toPos)) {
+					Log.i("ChessBoard", "Possible move: from = " + fromPos + " to = " + toPos);
 					if(reverseBoard) drawCell(canvas, boardNumber - 1 - rank, boardNumber - 1 - file, showMoveColor);
 					else drawCell(canvas, rank, file, showMoveColor);
 				}
 			}
+//		invalidate();
 	}
 	
 	/**
