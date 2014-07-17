@@ -1,5 +1,7 @@
 package org.chessvn.android.app.view;
 
+import java.util.List;
+
 import org.chessvn.android.app.R;
 import org.chessvn.android.app.chessvn.RuleBoard;
 
@@ -22,8 +24,9 @@ public class ChessBoard extends View {
 	
 	private int cellSize;
 	private int circleRadius = 12;
-	private byte[] allPossibleMoves;
-	private Canvas canvas;
+	private List<Byte> allPossibleMoves = null;
+//	private Canvas canvas;
+	private boolean showMoveOn = false;//bit that turn on or off showMove depend on Touch Event
 
 	// color theme
 	private Paint cellColor;
@@ -110,15 +113,17 @@ public class ChessBoard extends View {
 	}
 
 	@Override
-	protected void onDraw(Canvas cv) {
+	protected void onDraw(Canvas canvas) {
+		Log.i("ChessBoard", "Redawing view ...");
 		cellSize = getCellSize();
-		this.canvas = cv;
+//		this.canvas = canvas;
 //		reverseBoard = true;//test
 //		drawCell(canvas, 4, 4, cellColor);//test
 		drawAllCells(canvas);
 		if(isChessvn) drawAllCircles(canvas);
 //		if(rb == null) rb = new RuleBoard(isChessvn);
 		drawAllPiecesOnBoard(rb, canvas);
+		if(showMoveOn) showMoveOnBoard(canvas);
 	}
 
 	@Override
@@ -140,14 +145,20 @@ public class ChessBoard extends View {
         		return true;
         	}
         	
+        	//append piece to touch point if support drag piece to move
+        	
         	//esle if show move true: showmove();
         	if(showMove) {
+        		showMoveOn = true;
         		Log.i("ChessBoard", "Showing move now ...");
         		Log.i("ChessBoard", "selectedPos = " + selectedPos);
-        		showMove(canvas, selectedPos);
+        		showMove(selectedPos);
         	}
         	return true;
         case (MotionEvent.ACTION_UP) :
+        	showMoveOn = false;
+        	invalidate();
+        	Log.i("ChessBoard", "Showing move off now.");
         	//check if piece can move to new position
         	//make move
         	//show message
@@ -187,17 +198,26 @@ public class ChessBoard extends View {
 		return posSelected;
 	}
 	
-	public void showMove(Canvas canvas, byte fromPos) {
-		for (byte rank = 0; rank < boardNumber; rank++)
-			for (byte file = 0; file < boardNumber; file++) {
-				byte toPos = rb.getPos(rank, file);
-				if(rb.isPossibleMove(fromPos, toPos)) {
-					Log.i("ChessBoard", "Possible move: from = " + fromPos + " to = " + toPos);
-					if(reverseBoard) drawCell(canvas, boardNumber - 1 - rank, boardNumber - 1 - file, showMoveColor);
-					else drawCell(canvas, rank, file, showMoveColor);
-				}
-			}
-//		invalidate();
+	/**
+	 * Update all possible moves of board from piece of given position
+	 * @param fromPos
+	 */
+	public void showMove(byte fromPos) {
+		this.allPossibleMoves = rb.getAllPossibleMoves(fromPos);
+		invalidate();//update view
+	}
+	
+	/**
+	 * Show real all  possible moves on the board 
+	 * @param canvas
+	 */
+	private void showMoveOnBoard(Canvas canvas) {
+		byte rank, file;
+		for(byte curPos : allPossibleMoves) {
+			rank = rb.getRank(curPos);
+			file = rb.getFile(curPos);
+			drawCell(canvas, rank, file, showMoveColor);
+		}
 	}
 	
 	/**
