@@ -175,17 +175,17 @@ public class RuleBoard {
 	}
 	
 
-//	public byte[] getAllPossibleMoves(byte fromPos) {
-//		List<Byte> result = new ArrayList<Byte>();
-//		for (byte rank = 0; rank < boardNumber; rank++)
-//			for (byte file = 0; file < boardNumber; file++) {
-//				byte toPos = getPos(rank, file);
-//				if(isPossibleMove(fromPos, toPos)) {
-//					result.add(toPos);
-//				}
-//			}
-//		if(result.size() > 0) return result.toArray(byte[result.size()]);
-//	}
+	public List<Byte> getAllPossibleMoves(byte fromPos) {
+		List<Byte> result = new ArrayList<Byte>();
+		for (byte rank = 0; rank < boardNumber; rank++)
+			for (byte file = 0; file < boardNumber; file++) {
+				byte toPos = getPos(rank, file);
+				if(isPossibleMove(fromPos, toPos)) {
+					result.add(toPos);
+				}
+			}
+		return result;
+	}
 	
 	public boolean isEqualTo(RuleBoard rb) {
 		// Whether rooks or kings have moved is not considered here.
