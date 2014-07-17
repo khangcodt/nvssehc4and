@@ -212,10 +212,14 @@ public class ChessBoard extends View {
 	 * @param canvas
 	 */
 	private void showMoveOnBoard(Canvas canvas) {
-		byte rank, file;
+		int rank, file;
 		for(byte curPos : allPossibleMoves) {
-			rank = rb.getRank(curPos);
+			rank = boardNumber - 1 - rb.getRank(curPos);
 			file = rb.getFile(curPos);
+			if(reverseBoard) {
+				rank = boardNumber - 1 - rank;
+    			file = boardNumber - 1 - file;
+			}
 			drawCell(canvas, rank, file, showMoveColor);
 		}
 	}
