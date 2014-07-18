@@ -23,10 +23,11 @@ public class ChessBoard extends View {
 	public boolean showMove = true;
 	
 	private int cellSize;
-	private int circleRadius = 12;
+	private int circleRadius = 15;
 	private List<Byte> allPossibleMoves = null;
 //	private Canvas canvas;
 	private boolean showMoveOn = false;//bit that turn on or off showMove depend on Touch Event
+	private int touchedX, touchedY;
 
 	// color theme
 	private Paint cellColor;
@@ -38,11 +39,11 @@ public class ChessBoard extends View {
 	RuleBoard rb;
 	
 	private void initConstructor() {
-//		if(isChessvn) boardNumber = 10;//Chessvn Board
-//		else boardNumber = 8;//Chess Board
 		isChessvn = RuleBoard.isChessvn;
 		boardNumber = RuleBoard.boardNumber;
 		rb = new RuleBoard(isChessvn);
+		
+		touchedX = touchedY = 0;
 		
 		cellSize = getCellSize();
 		cellColor = new Paint();
@@ -57,7 +58,13 @@ public class ChessBoard extends View {
 		super(context, attrs);
 		initConstructor();
 	}
-
+	
+	public ChessBoard(Context context, AttributeSet attrs, RuleBoard rb) {
+		super(context, attrs);
+		this.rb = rb;
+		initConstructor();
+	}
+	
 	public ChessBoard(Context context, AttributeSet attrs, boolean isChessvn) {
 		super(context, attrs);
 		ChessBoard.isChessvn = isChessvn;
@@ -212,6 +219,7 @@ public class ChessBoard extends View {
 	 * @param canvas
 	 */
 	private void showMoveOnBoard(Canvas canvas) {
+		if(allPossibleMoves == null) return;
 		int rank, file;
 		for(byte curPos : allPossibleMoves) {
 			rank = boardNumber - 1 - rb.getRank(curPos);
@@ -319,6 +327,10 @@ public class ChessBoard extends View {
 			for(byte file = 0; file < boardNumber; file++) {
 				drawPiece(canvas, rank, file, rb.field[rb.getPos(rank, file)]);
 			}
+	}
+	
+	public void drawTouchedPiece() {
+		
 	}
 	
 	/**
