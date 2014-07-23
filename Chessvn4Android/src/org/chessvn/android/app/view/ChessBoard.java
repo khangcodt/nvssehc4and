@@ -25,9 +25,10 @@ public class ChessBoard extends View {
 	private int cellSize;
 	private int circleRadius = 15;
 	private List<Byte> allPossibleMoves = null;
-//	private Canvas canvas;
 	private boolean showMoveOn = false;//bit that turn on or off showMove depend on Touch Event
-	private int touchedX, touchedY;
+	private int touchedX, touchedY;//store coordinate of touched point
+	private int MAX_SIZE = cellSize*(boardNumber);
+//	private Drawable selPieceImage = null;//image to draw with touched point
 
 	// color theme
 	private Paint cellColor;
@@ -44,6 +45,7 @@ public class ChessBoard extends View {
 		rb = new RuleBoard(isChessvn);
 		
 		touchedX = touchedY = 0;
+		MAX_SIZE = cellSize*(boardNumber);
 		
 		cellSize = getCellSize();
 		cellColor = new Paint();
@@ -123,36 +125,38 @@ public class ChessBoard extends View {
 	protected void onDraw(Canvas canvas) {
 		Log.i("ChessBoard", "Redawing view ...");
 		cellSize = getCellSize();
-//		this.canvas = canvas;
 //		reverseBoard = true;//test
 //		drawCell(canvas, 4, 4, cellColor);//test
 		drawAllCells(canvas);
 		if(isChessvn) drawAllCircles(canvas);
 //		if(rb == null) rb = new RuleBoard(isChessvn);
 		drawAllPiecesOnBoard(rb, canvas);
+//		drawFreePiece(canvas, cellSize+134, cellSize+176, RuleBoard.BR);//test
 		if(showMoveOn) showMoveOnBoard(canvas);
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+    	byte selectedPos = getPosOnEvent(event);
 		int action = event.getAction();
 		switch(action) {
         case (MotionEvent.ACTION_DOWN) :
-        	byte selectedPos = getPosOnEvent(event);
         	//if(cannot handle piece or board) return;
         	if(!rb.isHandledPiece(selectedPos)) {
         		Log.i("ChessBoard", "cannot handle piece");
         		return true;
         	}
-        	
+        
+        	//set touched point
+        	touchedX = (int) event.getX();//maybe check involve with reversed and side of x,y
+        	touchedY = (int) event.getY();
+        
         	//else if no piece in this position: revalidate(); return;
         	if(rb.isEmptyField(selectedPos)) {
         		Log.i("ChessBoard", "Empty piece");
         		invalidate();
         		return true;
         	}
-        	
-        	//append piece to touch point if support drag piece to move
         	
         	//esle if show move true: showmove();
         	if(showMove) {
@@ -162,6 +166,15 @@ public class ChessBoard extends View {
         		showMove(selectedPos);
         	}
         	return true;
+        case (MotionEvent.ACTION_MOVE) :
+        	//if(cannot handle piece or board) return;
+        	if(!rb.isHandledPiece(selectedPos)) {
+        		Log.i("ChessBoard", "cannot handle piece");
+        		return true;
+        	}
+        
+        	//append piece to touch point if support drag piece to move
+        	
         case (MotionEvent.ACTION_UP) :
         	showMoveOn = false;
         	invalidate();
@@ -193,7 +206,7 @@ public class ChessBoard extends View {
         			rank = boardNumber - 1 - rank;
         			file = boardNumber - 1 - file;
         		}
-        		posSelected = rb.getPos(rank, file);
+        		posSelected = RuleBoard.getPos(rank, file);
         	}
         	Log.i("ChessBoard", "xCrd = " + xCrd);
         	Log.i("ChessBoard", "yCrd = " + yCrd);
@@ -222,8 +235,8 @@ public class ChessBoard extends View {
 		if(allPossibleMoves == null) return;
 		int rank, file;
 		for(byte curPos : allPossibleMoves) {
-			rank = boardNumber - 1 - rb.getRank(curPos);
-			file = rb.getFile(curPos);
+			rank = boardNumber - 1 - RuleBoard.getRank(curPos);
+			file = RuleBoard.getFile(curPos);
 			if(reverseBoard) {
 				rank = boardNumber - 1 - rank;
     			file = boardNumber - 1 - file;
@@ -308,11 +321,36 @@ public class ChessBoard extends View {
 	public void drawPiece(Canvas canvas, int rank, int file, byte piece) {
 		int left = file*cellSize;
 		int top = (boardNumber - 1 - rank)*cellSize;
-		int right = (file+1)*cellSize;
-		int bottom = (boardNumber - rank)*cellSize;
+		int right = left + cellSize;
+		int bottom = top + cellSize;
 		Drawable thispiece = loadPieceImage(piece);
 		if(thispiece != null) {
 			thispiece.setBounds(left, top, right, bottom);
+			thispiece.draw(canvas);
+		}
+	}
+	
+	/**
+	 * Draw given piece in given position
+	 * @param canvas
+	 * @param pos
+	 * @param piece
+	 */
+	public void drawPiece(Canvas canvas, byte pos, byte piece) {
+		drawPiece(canvas, RuleBoard.getRank(pos), RuleBoard.getFile(pos), piece);
+	}
+	
+	/**
+	 * Draw piece in free position, for moving action
+	 * @param canvas
+	 * @param xPos
+	 * @param yPos
+	 * @param piece
+	 */
+	public void drawFreePiece(Canvas canvas, int xPos, int yPos, byte piece) {
+		Drawable thispiece = loadPieceImage(piece);
+		if(thispiece != null) {
+			thispiece.setBounds(xPos, yPos, xPos+cellSize, yPos+cellSize);
 			thispiece.draw(canvas);
 		}
 	}
@@ -325,11 +363,19 @@ public class ChessBoard extends View {
 	public void drawAllPiecesOnBoard(RuleBoard rb, Canvas canvas) {
 		for(byte rank = 0; rank < boardNumber; rank++) 
 			for(byte file = 0; file < boardNumber; file++) {
-				drawPiece(canvas, rank, file, rb.field[rb.getPos(rank, file)]);
+				drawPiece(canvas, rank, file, rb.field[RuleBoard.getPos(rank, file)]);
 			}
 	}
 	
-	public void drawTouchedPiece() {
+	public void drawTouchedPiece(MotionEvent event) {
+		byte selectedPos = getPosOnEvent(event);
+		byte selectedPiece = rb.field[selectedPos];
+		if(selectedPiece == RuleBoard.EM) {
+			return;
+		}
+		Drawable selPieceImage = loadPieceImage(selectedPiece);
+		//remove selected piece on board
+		rb.field[selectedPos] = RuleBoard.EM;
 		
 	}
 	

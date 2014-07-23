@@ -60,52 +60,52 @@ public class RuleBoard {
 	byte lastTo = totalField; // (x>>3) gives rank, (x&7) gives file
 	byte pawnPromotion = 2; // Queen. In black player is turn, 6 will be added.
 
-	public boolean isWhiteFigure(byte f) {
+	public static boolean isWhiteFigure(byte f) {
 		return f > 0 && f < 8;
 	}
 
-	public boolean isBlackFigure(byte f) {
+	public static boolean isBlackFigure(byte f) {
 		return f > 7 && f < 15;
 	}
 
-	public byte boardCoords(String s) {
+	public static byte boardCoords(String s) {
 		// must check carefully
 		return ((byte) (((int) s.charAt(0) - (int) 'a') + 
 				(((int) (Character.getNumericValue(s.charAt(1)))) * 10)));// need to change to
 														// getPos();
 	}
 
-	public String algebraic(byte co) {
+	public static String algebraic(byte co) {
 		// must check carefully
 		// Converts internal board coordinates to algebraic notation.
 		return ("" + (char) ((int) 'a' + getFile(co)) + "" + (getRank(co)));
 	}
 
-	public String algebraic(int co) {
+	public static String algebraic(int co) {
 		// Converts internal board coordinates to algebraic notation.
 		return algebraic((byte) co);
 	}
 
-	public String algebraic(int rank, int file) {
+	public static String algebraic(int rank, int file) {
 		return algebraic(getPos(rank, file));
 	}
 
-	public byte getRank(byte pos) {
+	public static byte getRank(byte pos) {
 		// maybe optimized later
 		return (byte) (pos / 10);
 	}
 
-	public byte getFile(byte pos) {
+	public static byte getFile(byte pos) {
 		// maybe optimized later
 		return (byte) (pos % 10);
 	}
 
-	public byte getPos(byte Rank, byte File) {
+	public static byte getPos(byte Rank, byte File) {
 		// maybe optimized later
 		return (byte) (Rank * 10 + File);
 	}
 
-	public byte getPos(int Rank, int File) {
+	public static byte getPos(int Rank, int File) {
 		// maybe optimized later
 		return (byte) (Rank * 10 + File);
 	}
@@ -114,7 +114,7 @@ public class RuleBoard {
 		return (x < 0) ? -x : x;
 	}
 
-	public byte abs(byte a) {
+	public static byte abs(byte a) {
 		return (byte) ((a < 0) ? -a : a);
 	}
 
