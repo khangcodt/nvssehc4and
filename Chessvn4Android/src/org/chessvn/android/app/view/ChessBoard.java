@@ -27,6 +27,7 @@ public class ChessBoard extends View {
 	private List<Byte> allPossibleMoves = null;
 	private boolean showMoveOn = false;//bit that turn on or off showMove depend on Touch Event
 	private int touchedX, touchedY;//store coordinate of touched point
+	private byte touchedPiece;
 	private int MAX_SIZE = cellSize*(boardNumber);
 //	private Drawable selPieceImage = null;//image to draw with touched point
 
@@ -45,6 +46,7 @@ public class ChessBoard extends View {
 		rb = new RuleBoard(isChessvn);
 		
 		touchedX = touchedY = 0;
+		touchedPiece = RuleBoard.EM;
 		MAX_SIZE = cellSize*(boardNumber);
 		
 		cellSize = getCellSize();
@@ -132,7 +134,10 @@ public class ChessBoard extends View {
 //		if(rb == null) rb = new RuleBoard(isChessvn);
 		drawAllPiecesOnBoard(rb, canvas);
 //		drawFreePiece(canvas, cellSize+134, cellSize+176, RuleBoard.BR);//test
-		if(showMoveOn) showMoveOnBoard(canvas);
+		if(showMoveOn) {
+			showMoveOnBoard(canvas);
+		}
+		drawFreePiece(canvas, touchedX, touchedY, touchedPiece);//draw touched piece
 	}
 
 	@Override
@@ -167,6 +172,7 @@ public class ChessBoard extends View {
         	}
         	return true;
         case (MotionEvent.ACTION_MOVE) :
+        	Log.i("ChessBoard", "Move action");
         	//if(cannot handle piece or board) return;
         	if(!rb.isHandledPiece(selectedPos)) {
         		Log.i("ChessBoard", "cannot handle piece");
@@ -174,6 +180,7 @@ public class ChessBoard extends View {
         	}
         
         	//append piece to touch point if support drag piece to move
+        	drawTouchedPiece(event);
         	
         case (MotionEvent.ACTION_UP) :
         	showMoveOn = false;
@@ -210,10 +217,10 @@ public class ChessBoard extends View {
         	}
         	Log.i("ChessBoard", "xCrd = " + xCrd);
         	Log.i("ChessBoard", "yCrd = " + yCrd);
-        	Log.i("ChessBoard", "cellSize = " + cellSize);
-        	Log.i("ChessBoard", "rank = " + rank);
-        	Log.i("ChessBoard", "file = " + file);
-        	Log.i("ChessBoard", "posSelected = " + posSelected);
+//        	Log.i("ChessBoard", "cellSize = " + cellSize);
+//        	Log.i("ChessBoard", "rank = " + rank);
+//        	Log.i("ChessBoard", "file = " + file);
+//        	Log.i("ChessBoard", "posSelected = " + posSelected);
         }
 		return posSelected;
 	}
@@ -369,14 +376,27 @@ public class ChessBoard extends View {
 	
 	public void drawTouchedPiece(MotionEvent event) {
 		byte selectedPos = getPosOnEvent(event);
-		byte selectedPiece = rb.field[selectedPos];
-		if(selectedPiece == RuleBoard.EM) {
+		touchedPiece = rb.field[selectedPos];
+		if(touchedPiece == RuleBoard.EM) {
 			return;
 		}
-		Drawable selPieceImage = loadPieceImage(selectedPiece);
+//		Drawable selPieceImage = loadPieceImage(selectedPiece);
 		//remove selected piece on board
 		rb.field[selectedPos] = RuleBoard.EM;
-		
+		//draw touched piece
+		gettouchedPoint(event);
+		invalidate();
+	}
+	
+	/**
+	 * update touched point
+	 * @param event
+	 */
+	private void gettouchedPoint(MotionEvent event) {
+		touchedX = (int) event.getX();//maybe check involve with reversed and side of x,y
+    	touchedY = (int) event.getY();
+    	Log.i("ChessBoard", "touchedX = " + touchedX);
+    	Log.i("ChessBoard", "touchedY = " + touchedY);
 	}
 	
 	/**
